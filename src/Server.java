@@ -17,11 +17,11 @@ public class Server implements Serializable {
     public void execute() {
         try (ServerSocket serverSocket = new ServerSocket(port)) {
 
-            System.out.println("Chat Server is listening on port " + port);
+            System.out.println("[Server]: Chat Server is listening on port " + port);
 
             while (true) {
                 Socket socket = serverSocket.accept();
-                System.out.println("New user connected");
+                System.out.println("[Server]: New user connected");
 
                 UserConnectionThread newUser = new UserConnectionThread(socket, this);
                 userThreads.add(newUser);
@@ -30,14 +30,14 @@ public class Server implements Serializable {
             }
 
         } catch (IOException ex) {
-            System.out.println("Error in the server: " + ex.getMessage());
+            System.out.println("[Server]: Error in the server: " + ex.getMessage());
             ex.printStackTrace();
         }
     }
 
     public static void main(String[] args) {
         if (args.length < 1) {
-            System.out.println("Syntax: java Server <port-number>");
+            System.out.println("[Server]: Syntax: java Server <port-number>");
             System.exit(0);
         }
 
@@ -72,7 +72,7 @@ public class Server implements Serializable {
         boolean removed = userNames.remove(userName);
         if (removed) {
             userThreads.remove(aUser);
-            System.out.println("The user " + userName + " quitted");
+            System.out.println("[Server]: The user " + userName + " quitted");
         }
     }
 

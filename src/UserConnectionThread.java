@@ -1,10 +1,14 @@
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserConnectionThread extends Thread {
     private final Socket socket;
     private final Server server;
     private PrintWriter writer;
+    private String chat = "";
+    private static List<String> messageList = new ArrayList<>();
 
     public UserConnectionThread(Socket socket, Server server) {
         this.socket = socket;
@@ -24,22 +28,29 @@ public class UserConnectionThread extends Thread {
             String userName = reader.readLine();
             server.addUserName(userName);
 
-            String serverMessage = "New user connected: " + userName;
+            String serverMessage = "[Server]: New user connected: " + userName;
+            //writer.println(messageList);
             server.broadcast(serverMessage, this);
 
             String clientMessage;
 
             do {
                 clientMessage = reader.readLine();
-                serverMessage = "[" + userName + "]: " + clientMessage;
-                server.broadcast(serverMessage, this);
+
+                if(!clientMessage.isEmpty() && clientMessage != null) {
+                    messageList.add(clientMessage);
+
+                    System.out.println("[Server]: " + clientMessage);
+
+                    server.broadcast(clientMessage, this);
+                }
 
             } while (!clientMessage.equals("bye"));
 
             server.removeUser(userName, this);
             socket.close();
 
-            serverMessage = userName + " has quitted.";
+            serverMessage = "[Server]: " + userName + " has quitted.";
             server.broadcast(serverMessage, this);
 
         } catch (IOException ex) {
@@ -53,9 +64,9 @@ public class UserConnectionThread extends Thread {
      */
     void printUsers() {
         if (server.hasUsers()) {
-            writer.println("Connected users: " + server.getUserNames());
+            writer.println("[Server]: Connected users: " + server.getUserNames());
         } else {
-            writer.println("No other users connected");
+            writer.println("[Server]: No other users connected");
         }
     }
 
