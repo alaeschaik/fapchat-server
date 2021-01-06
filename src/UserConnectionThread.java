@@ -37,6 +37,7 @@ public class UserConnectionThread extends Thread {
             do {
                 clientMessage = reader.readLine();
 
+                //check if Message is empty, if not message is going to be broadcast
                 if(!clientMessage.isEmpty() && clientMessage != null) {
                     messageList.add(clientMessage);
 
