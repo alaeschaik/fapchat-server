@@ -1,14 +1,10 @@
 import java.io.*;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 
 public class UserConnectionThread extends Thread {
     private final Socket socket;
     private final Server server;
     private PrintWriter writer;
-    private String chat = "";
-    private static List<String> messageList = new ArrayList<>();
 
     public UserConnectionThread(Socket socket, Server server) {
         this.socket = socket;
@@ -27,9 +23,7 @@ public class UserConnectionThread extends Thread {
 
             String userName = reader.readLine();
             server.addUserName(userName);
-
             String serverMessage = "[Server]: New user connected: " + userName;
-            //writer.println(messageList);
             server.broadcast(serverMessage, this);
 
             String clientMessage;
@@ -38,9 +32,7 @@ public class UserConnectionThread extends Thread {
                 clientMessage = reader.readLine();
 
                 //check if Message is empty, if not message is going to be broadcast
-                if(!clientMessage.isEmpty() && clientMessage != null) {
-                    messageList.add(clientMessage);
-
+                if (!clientMessage.isEmpty()) {
                     System.out.println("[Server]: " + clientMessage);
 
                     server.broadcast(clientMessage, this);

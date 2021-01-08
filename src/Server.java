@@ -23,9 +23,9 @@ public class Server implements Serializable {
                 Socket socket = serverSocket.accept();
                 System.out.println("[Server]: New user connected");
 
-                UserConnectionThread newUser = new UserConnectionThread(socket, this);
-                userThreads.add(newUser);
-                newUser.start();
+                UserConnectionThread user = new UserConnectionThread(socket, this);
+                userThreads.add(user);
+                user.start();
 
             }
 
@@ -36,13 +36,7 @@ public class Server implements Serializable {
     }
 
     public static void main(String[] args) {
-        if (args.length < 1) {
-            System.out.println("[Server]: Syntax: java Server <port-number>");
-            System.exit(0);
-        }
-
-        int port = Integer.parseInt(args[0]);
-
+        int port = args.length > 0 ? Integer.parseInt(args[0]) : 8080;
         Server server = new Server(port);
         server.execute();
     }
@@ -51,9 +45,9 @@ public class Server implements Serializable {
      * Delivers a message from one user to others (broadcasting)
      */
     void broadcast(String message, UserConnectionThread excludeUser) {
-        for (UserConnectionThread aUser : userThreads) {
-            if (aUser != excludeUser) {
-                aUser.sendMessage(message);
+        for (UserConnectionThread user : userThreads) {
+            if (user != excludeUser) {
+                user.sendMessage(message);
             }
         }
     }
