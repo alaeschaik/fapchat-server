@@ -9,6 +9,7 @@ public class Server implements Serializable {
     private final int port;
     private final Set<String> userNames = new HashSet<>();
     private final Set<UserConnectionThread> userThreads = new HashSet<>();
+    static int counter = 0;
 
     public Server(int port) {
         this.port = port;
@@ -22,6 +23,7 @@ public class Server implements Serializable {
             while (true) {
                 Socket socket = serverSocket.accept();
                 System.out.println("[Server]: New user connected");
+                counter++;
 
                 UserConnectionThread user = new UserConnectionThread(socket, this);
                 userThreads.add(user);
@@ -53,6 +55,17 @@ public class Server implements Serializable {
     }
 
     /**
+     * Delivers a message from one user to another (unicasting)
+     */
+    void whisper(String message, UserConnectionThread onlyUser) {
+        for (UserConnectionThread user : userThreads) {
+            if (user == onlyUser) {
+                user.sendMessage(message);
+            }
+        }
+    }
+
+    /**
      * Stores username of the newly connected client.
      */
     void addUserName(String userName) {
@@ -68,6 +81,7 @@ public class Server implements Serializable {
             userThreads.remove(aUser);
             System.out.println("[Server]: The user " + userName + " quitted");
         }
+        counter--;
     }
 
     Set<String> getUserNames() {
