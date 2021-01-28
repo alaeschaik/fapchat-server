@@ -84,6 +84,12 @@ public class Server implements Serializable {
         counter--;
     }
 
+    void changeUsername(String currentUserName, String newUserName){
+        userNames.remove(currentUserName);
+        userNames.add(newUserName);
+    }
+
+
     Set<String> getUserNames() {
         return this.userNames;
     }

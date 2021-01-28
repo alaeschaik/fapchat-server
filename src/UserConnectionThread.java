@@ -35,15 +35,25 @@ public class UserConnectionThread extends Thread {
                 //check if Message is empty, if not message is going to be broadcast
                 if(clientMessage.equals("statusUpdateRequest")) {
 
-                    //send counter
+                    //send usercounter and userlist
                     writer.println("USER_ONLINE: " + server.counter);
-                    //System.out.println("[Server]: Online User: " + server.counter);
+                    writer.println("LIST_ONLINE: " + server.getUserNames());
 
-                } else if(!clientMessage.isEmpty() && clientMessage != null && !clientMessage.equals("bye")) {
+                } else if(clientMessage.contains("CHANGEUSERNAME")) {
+
+                    System.out.print(userName + " changed in ");
+                    String currentUserName = userName;
+                    userName = clientMessage.substring(clientMessage.lastIndexOf("CHANGEUSERNAME") + 14);
+                    System.out.println(userName);
+                    server.changeUsername(currentUserName, userName);
+
+
+                } else if(!clientMessage.isEmpty() && clientMessage != null && !clientMessage.equals("bye") && !clientMessage.equals(userName)) {
 
                     System.out.println("[Server]: " + clientMessage);
 
                     server.broadcast(clientMessage, this);
+
                 }
 
             } while (!clientMessage.equals("bye"));
