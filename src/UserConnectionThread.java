@@ -36,7 +36,7 @@ public class UserConnectionThread extends Thread {
                 if(clientMessage.equals("statusUpdateRequest")) {
 
                     //send usercounter and userlist
-                    writer.println("USER_ONLINE: " + server.counter);
+                    writer.println("USER_ONLINE: " + Server.counter);
                     writer.println("LIST_ONLINE: " + server.getUserNames());
 
                 } else if(clientMessage.contains("CHANGEUSERNAME")) {
@@ -48,7 +48,7 @@ public class UserConnectionThread extends Thread {
                     server.changeUsername(currentUserName, userName);
 
 
-                } else if(!clientMessage.isEmpty() && clientMessage != null && !clientMessage.equals("bye") && !clientMessage.equals(userName)) {
+                } else if(!clientMessage.isEmpty() && !clientMessage.equals("bye") && !clientMessage.equals(userName)) {
 
                     System.out.println("[Server]: " + clientMessage);
 
@@ -59,7 +59,7 @@ public class UserConnectionThread extends Thread {
             } while (!clientMessage.equals("bye"));
 
             //client ends when "byebye" received
-            server.whisper("byebye", this);
+            server.whisper(this);
 
             server.removeUser(userName, this);
             socket.close();

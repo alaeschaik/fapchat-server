@@ -57,10 +57,10 @@ public class Server implements Serializable {
     /**
      * Delivers a message from one user to another (unicasting)
      */
-    void whisper(String message, UserConnectionThread onlyUser) {
+    void whisper(UserConnectionThread onlyUser) {
         for (UserConnectionThread user : userThreads) {
             if (user == onlyUser) {
-                user.sendMessage(message);
+                user.sendMessage("byebye");
             }
         }
     }
